@@ -1,5 +1,7 @@
+import ray
 import torch
 from ray import tune
+from torchvision import transforms
 
 from dataset import MyDataset
 from model import MyModel
@@ -29,7 +31,13 @@ def test_model(config, model, test_dataset):
 
 if __name__ == "__main__":
 
-    my_dataset = MyDataset(...)
+    # Example transform
+    transform = transforms.Compose([
+        transforms.Resize((128, 128)),
+        transforms.ToTensor(),
+    ]) 
+
+    my_dataset = MyDataset(images_path='/data/data', labels_path='chinese_mnist.csv', transform=transform)
     train_dataset, val_dataset, test_dataset = ...
     ray.init(configure_logging=False)
     analysis = tune.run(
