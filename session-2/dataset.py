@@ -13,22 +13,20 @@ class MyDataset(Dataset):
         self.transform = transform
         # Load labels
         self.labels_df = pd.read_csv(labels_path)
-        # Assuming the dataframe has columns 'file' for image filenames and 'label' for labels
-        self.data = self.labels_df['file'].values
-        self.labels = self.labels_df['label'].values
+
 
         
 
     def __len__(self):
-        return len(self.labels)
+        return len(self.labels_df)
 
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.images_path, self.data[idx])
+        suite_id, sample_id, code, value, character = self.labels_df.loc[idx, :]
+        img_name = os.path.join(self.images_path, f"input_{suite_id}_{sample_id}_{code}.jpg")
         image = Image.open(img_name)
-        label = self.labels[idx]
 
         if self.transform:
             image = self.transform(image)
 
-            return image, label
+            return image, code-1
