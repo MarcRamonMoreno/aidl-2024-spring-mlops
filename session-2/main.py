@@ -84,8 +84,8 @@ if __name__ == "__main__":
         # Include other configurations as necessary
     }
     dataset_paths = {
-        "images": "/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/data/data",  # Update this path
-        "labels": "/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/chinese_mnist.csv",  # Update this path
+        "images": "/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data",  # Update this path
+        "labels": "/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv",  # Update this path
     }
     train_model(config, dataset_paths)
                             

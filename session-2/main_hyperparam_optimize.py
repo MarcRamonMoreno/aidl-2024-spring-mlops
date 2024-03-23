@@ -43,7 +43,6 @@ def eval_single_epoch(model, data_loader, criterion, device):
 def train_model(config):
     train_loader = DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=config["batch_size"], shuffle=False)
-    
     my_model = MyModel().to(device)
     optimizer = optim.Adam(my_model.parameters(), lr=config["lr"])
     criterion = nn.CrossEntropyLoss()
@@ -70,23 +69,30 @@ if __name__ == "__main__":
         transforms.ToTensor(),
     ]) 
 
-    my_dataset = MyDataset(images_path='/data/data', labels_path='chinese_mnist.csv', transform=transform)
+    my_dataset = MyDataset(images_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data', 
+                           labels_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv', 
+                           transform=transform)
     # Assuming my_dataset is already defined
     dataset_size = len(my_dataset)
     train_size = int(dataset_size * 0.7)
     val_size = int(dataset_size * 0.15)
     test_size = dataset_size - (train_size + val_size)
     train_dataset, val_dataset, test_dataset = random_split(my_dataset, [train_size, val_size, test_size])
-    ray.init(configure_logging=False)
+    ray.init(configure_logging=False, num_gpus=1)
     analysis = tune.run(
         train_model,
+        resources_per_trial={"cpu": 1, "gpu": 1},
         metric="val_loss",
         mode="min",
         num_samples=5,
         config={
-            "hyperparam_1": tune.uniform(1, 10),
-            "hyperparam_2": tune.grid_search(["relu", "tanh"]),
-        })
+            "hyperparam_1": tune.uniform(1, 10),  # Assuming this is used somewhere in your model or training process
+            "hyperparam_2": tune.grid_search(["relu", "tanh"]),  # Assuming this influences the activation function in your model
+            "batch_size": tune.choice([16, 32, 64, 128]),  # Adding batch_size to the config
+            "lr": tune.loguniform(1e-4, 1e-1),  # Example of how to add learning rate if it's not already there
+            "epochs": 10  # Assuming a fixed number of epochs for simplicity; could also be made variable
+        }
+    )
 
     print("Best hyperparameters found were: ", analysis.best_config)
     # Assuming we're directly using the best model for simplicity,
