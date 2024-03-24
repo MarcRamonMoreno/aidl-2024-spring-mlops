@@ -1,5 +1,6 @@
 matplotlib==3.3.3
-numpy==1.19.4
+numpy
 Pillow==8.0.1
-torch==1.7.0
-ray==1.0.1.post1
+torch
+ray
+kaggle
