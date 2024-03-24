@@ -21,6 +21,7 @@ def train_single_epoch(model, data_loader, optimizer, criterion, device):
         images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(images)
+        print(f"Output shape: {outputs.shape}, Target shape: {labels.shape}")
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
@@ -50,8 +51,8 @@ def eval_single_epoch(model, data_loader, criterion, device):
 
 
 def train_model(config):
-    train_loader = DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=config["batch_size"], shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=config["batch_size"], shuffle=False, num_workers=4)
     my_model = MyModel().to(device)
     optimizer = optim.Adam(my_model.parameters(), lr=config["lr"])
     criterion = nn.CrossEntropyLoss()
@@ -76,7 +77,7 @@ if __name__ == "__main__":
     transform = transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Corrected normalization
+        transforms.Normalize(mean=[0.5], std=[0.5])  # Corrected normalization
     ])
 
 
