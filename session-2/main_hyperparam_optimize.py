@@ -16,6 +16,7 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 def train_single_epoch(model, data_loader, optimizer, criterion, device):
     model.train()
     total_loss = 0
+    total_correct = 0
     for images, labels in data_loader:
         images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
@@ -23,20 +24,28 @@ def train_single_epoch(model, data_loader, optimizer, criterion, device):
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
+        
         total_loss += loss.item()
+        total_correct += accuracy(outputs, labels)
+    
     return total_loss / len(data_loader)
+
 
 
 
 def eval_single_epoch(model, data_loader, criterion, device):
     model.eval()
     total_loss = 0
+    total_correct = 0
     with torch.no_grad():
         for images, labels in data_loader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             loss = criterion(outputs, labels)
+            
             total_loss += loss.item()
+            total_correct += accuracy(outputs, labels)
+    
     return total_loss / len(data_loader)
 
 
@@ -67,7 +76,9 @@ if __name__ == "__main__":
     transform = transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
-    ]) 
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # Corrected normalization
+    ])
+
 
     my_dataset = MyDataset(images_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data', 
                            labels_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv', 

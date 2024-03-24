@@ -8,8 +8,13 @@ class MyDataset(Dataset):
     def __init__(self, images_path, labels_path, transform=None):
         self.images_path = images_path
         self.labels_df = pd.read_csv(labels_path)
-        # If no transform is specified, default to converting images to tensors
-        self.transform = transform if transform is not None else transforms.ToTensor()
+        if transform is None:
+            self.transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.5], std=[0.5])  # Example values for grayscale
+            ])
+        else:
+            self.transform = transform
 
     def __len__(self):
         return len(self.labels_df)
