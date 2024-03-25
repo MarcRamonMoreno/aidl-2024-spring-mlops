@@ -23,6 +23,8 @@ class MyModel(nn.Module):
         x = self.pool(self.relu(self.conv3(x)))
         print(f"After layer3: {x.shape}")
         x = x.view(-1, 128 * 8 * 8)  # Flatten the output for the linear layer
+        print(f"After view: {x.shape}")
         x = self.relu(self.fc1(x))
         x = self.fc2(x)
+        print(f"After fc2: {x.shape}")
         return x
