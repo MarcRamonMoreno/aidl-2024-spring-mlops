@@ -16,6 +16,7 @@ def train_single_epoch(model, data_loader, optimizer, criterion, device):
         images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(images)
+        print(f"Output shape: {outputs.shape}, Target shape: {labels.shape}")
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
@@ -84,8 +85,8 @@ if __name__ == "__main__":
         # Include other configurations as necessary
     }
     dataset_paths = {
-        "images": "/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data",  # Update this path
-        "labels": "/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv",  # Update this path
+        "images": "/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/data/data",  # Update this path
+        "labels": "/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/chinese_mnist.csv",  # Update this path
     }
     train_model(config, dataset_paths)
                             
