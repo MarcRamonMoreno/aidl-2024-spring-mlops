@@ -171,3 +171,4 @@ session-3/cuda_version.py
 session-3/dataset/
 session-3/flower_test_image.jpg
 session-2/GPU_CUDA_CHECK.py
+session-2/experiment.py

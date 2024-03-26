@@ -16,6 +16,7 @@ class MyModel(nn.Module):
         self.fc2 = nn.Linear(in_features=512, out_features=15)  # Adjusted for 15 classes
 
     def forward(self, x):
+        print(f"x: {x.shape}")
         x = self.pool(self.relu(self.conv1(x)))
         print(f"After layer1: {x.shape}")
         x = self.pool(self.relu(self.conv2(x)))
@@ -25,6 +26,7 @@ class MyModel(nn.Module):
         x = x.view(-1, 128 * 8 * 8)  # Flatten the output for the linear layer
         print(f"After view: {x.shape}")
         x = self.relu(self.fc1(x))
+        print(f"After fc1: {x.shape}")
         x = self.fc2(x)
         print(f"After fc2: {x.shape}")
         return x
