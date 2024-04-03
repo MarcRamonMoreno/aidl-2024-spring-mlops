@@ -92,7 +92,7 @@ if __name__ == "__main__":
     val_size = int(dataset_size * 0.15)
     test_size = dataset_size - (train_size + val_size)
     train_dataset, val_dataset, test_dataset = random_split(my_dataset, [train_size, val_size, test_size])
-    ray.init(configure_logging=False, num_gpus=1)
+    ray.init(configure_logging=False, num_gpus=1, local=True)
     analysis = tune.run(
         train_model,
         resources_per_trial={"cpu": 1, "gpu": 1},
