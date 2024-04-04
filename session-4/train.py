@@ -11,15 +11,17 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train(dataloader):
     model.train()
-
-    # Train the model
     train_loss = 0
     train_acc = 0
     for text, offsets, label in dataloader:
-        # TODO complete the training code. The inputs of the model are text and offsets
-        ...
+        text, offsets, label = text.to(device), offsets.to(device), label.to(device)
+        optimizer.zero_grad()  # Zero the gradients
+        output = model(text, offsets)  # Forward pass
+        loss = criterion(output, label)  # Compute the loss
+        loss.backward()  # Backpropagation
+        optimizer.step()  # Update the weights
 
-        train_loss += loss.item() * len(output)
+        train_loss += loss.item() * text.size(0)
         train_acc += (output.argmax(1) == label).sum().item()
 
     # Adjust the learning rate
@@ -28,16 +30,18 @@ def train(dataloader):
     return train_loss / len(dataloader.dataset), train_acc / len(dataloader.dataset)
 
 
-def test(dataloader: DataLoader):
-    model.eval()
 
+def test(dataloader):
+    model.eval()
     loss = 0
     acc = 0
     for text, offsets, label in dataloader:
-        # TODO complete the evaluation code. The inputs of the model are text and offsets
-        ...
+        text, offsets, label = text.to(device), offsets.to(device), label.to(device)
+        with torch.no_grad():  # No gradient calculation
+            output = model(text, offsets)
+            loss = criterion(output, label)
 
-        loss += loss.item() * len(output)
+        loss += loss.item() * text.size(0)
         acc += (output.argmax(1) == label).sum().item()
 
     return loss / len(dataloader.dataset), acc / len(dataloader.dataset)
@@ -64,7 +68,7 @@ if __name__ == "__main__":
 
     # Load the model
     # TODO load the model
-    model = ...
+    model = SentimentAnalysis(vocab_size=VOCAB_SIZE, embed_dim=EMBED_DIM, num_class=NUM_CLASS).to(device)
         
     # We will use CrossEntropyLoss even though we are doing binary classification 
     # because the code is ready to also work for many classes
@@ -77,7 +81,9 @@ if __name__ == "__main__":
     # Split train and val datasets
     # TODO split `train_val_dataset` in `train_dataset` and `valid_dataset`. The size of train dataset should be 95%
 
-    train_dataset, valid_dataset = ...
+    train_size = int(0.95 * len(train_val_dataset))
+    valid_size = len(train_val_dataset) - train_size
+    train_dataset, valid_dataset = random_split(train_val_dataset, [train_size, valid_size])
     
     # DataLoader needs an special function to generate the batches. 
     # Since we will have inputs of varying size, we will concatenate 

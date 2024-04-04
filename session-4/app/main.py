@@ -20,38 +20,37 @@ app = Flask(__name__)
 # The code in this function will be executed before we recieve any request
 @app.before_first_request
 def _load_model():
-    # First load into memory the variables that we will need to predict
+    # Assuming the rest of your setup code remains unchanged
     checkpoint_path = pathlib.Path(__file__).parent.absolute() / "state_dict.pt"
-    checkpoint = torch.load(checkpoint_path)
+    checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
 
     global VOCAB, MODEL, NGRAMS, TOKENIZER, MAP_TOKEN2IDX
     VOCAB = checkpoint["vocab"]
-    # TODO load the model. You can get `embed_dim` and `num_class` from the checkpoint. 
-    # TODO Then, load the state dict of the model
-    MODEL = ...
-    MODEL...
+    # Loading the model with parameters from the checkpoint
+    embed_dim = checkpoint['embed_dim']
+    num_class = checkpoint['num_class']
+    vocab_size = len(VOCAB)
+    MODEL = SentimentAnalysis(vocab_size=vocab_size, embed_dim=embed_dim, num_class=num_class)
+    MODEL.load_state_dict(checkpoint['model_state_dict'])
 
     NGRAMS = checkpoint["ngrams"]
     TOKENIZER = get_tokenizer("basic_english")
     MAP_TOKEN2IDX = VOCAB.get_stoi()
+    MODEL.eval()  # Set the model to evaluation mode
+
 
 
 # Disable gradients
 @torch.no_grad()
 def predict_review_sentiment(text):
-    # Convert text to tensor
-    text = torch.tensor(
-        [MAP_TOKEN2IDX[token] for token in ngrams_iterator(TOKENIZER(text), NGRAMS)]
-    )
-
-    # Compute output
-    # TODO compute the output of the model. Note that you will have to give it a 0 as an offset.
-    output = ...
+    tokenized = [MAP_TOKEN2IDX.get(token, 0) for token in ngrams_iterator(TOKENIZER(text), NGRAMS)]
+    if not tokenized:  # Check if the list is empty
+        return 0  # You may choose a different way to handle empty inputs
+    text_tensor = torch.tensor([tokenized], dtype=torch.long)
+    offsets = torch.tensor([0], dtype=torch.long)
+    output = MODEL(text_tensor, offsets)
     confidences = torch.softmax(output, dim=1)
-    return confidences.squeeze()[
-        1
-    ].item()  # Class 1 corresponds to confidence of positive
-
+    return confidences.squeeze()[1].item()  # Assuming class 1 is positive sentiment
 
 @app.route("/predict", methods=["POST"])
 def predict():
