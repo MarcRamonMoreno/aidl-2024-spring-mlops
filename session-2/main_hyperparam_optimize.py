@@ -83,8 +83,8 @@ if __name__ == "__main__":
     ])
 
 
-    my_dataset = MyDataset(images_path='/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/data/data', 
-                           labels_path='/home/mramon/Escritorio/AI_Deep_Learning_UPC/MLOPs/aidl-2024-spring-mlops/session-2/chinese_mnist.csv', 
+    my_dataset = MyDataset(images_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data', 
+                           labels_path='/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv', 
                            transform=transform)
     # Assuming my_dataset is already defined
     dataset_size = len(my_dataset)
