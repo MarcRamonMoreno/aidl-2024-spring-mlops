@@ -46,8 +46,8 @@ def eval_single_epoch(model, val_loader):
 def train_model(config):
 
     data_transforms = transforms.Compose([transforms.ToTensor(), transforms.Normalize(0.5, 0.5)])
-    my_dataset = MyDataset("/Users/danielfojo/aidl/aidl-2021-winter-online-project/session-2/data/data/data/", 
-                           "/Users/danielfojo/aidl/aidl-2021-winter-online-project/session-2/data/chinese_mnist.csv", 
+    my_dataset = MyDataset("/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/data/data", 
+                           "/home/marc/Escritorio/UPC_AI_Deep_Learning/MLOps/aidl-2024-spring-mlops/session-2/chinese_mnist.csv", 
                            transform=data_transforms)
     train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(my_dataset, [10000, 2500, 2500])
     train_loader = DataLoader(train_dataset, batch_size=config["batch_size"], shuffle=True)
