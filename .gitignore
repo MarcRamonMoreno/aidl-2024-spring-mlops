@@ -174,12 +174,9 @@ session-2/GPU_CUDA_CHECK.py
 session-2/experiment.py
 session-4/aidl-session4/
 session-4/data/
-<<<<<<< HEAD
 session-5/aidl-session5/
 session-5/data/
 session-5/logs/
-=======
 session-2/solution/requirements.txt
 session-2/solution/requirements.txt
->>>>>>> 3544bbd (.gitignore update)
 session-2/solution/solution_session_2/
