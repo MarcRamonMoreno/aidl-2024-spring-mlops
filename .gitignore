@@ -174,3 +174,6 @@ session-2/GPU_CUDA_CHECK.py
 session-2/experiment.py
 session-4/aidl-session4/
 session-4/data/
+session-5/aidl-session5/
+session-5/data/
+session-5/logs/
